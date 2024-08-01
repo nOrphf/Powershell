@@ -2,6 +2,17 @@
 
 $ProfileDir = "$env:APPDATA\Floorp\Profiles\"
 
+try {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object Net.WebClient).DownloadFile('%~1', '%~2')
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.4tw%20L.js" -SslProtocol Tls12 -OutFile "user-overrides.4tw L.js"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.Vitec.js" -SslProtocol Tls12 -OutFile "user-overrides.Vitec.js"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/prefsCleaner.bat" -SslProtocol Tls12 -OutFile "prefsCleaner.bat"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/updater.bat" -SslProtocol Tls12 -OutFile "updater.bat"
+}
+catch {
+    Write-Error "Download of required files failed."
+}
+
 Try {
     $ResvProfileDir = Resolve-Path -Path $ProfileDir
     $PrefCleaner = Resolve-Path -Path ".\prefsCleaner.bat"
@@ -15,6 +26,9 @@ foreach ($Profile in $Profiles) {
     $ProfileName = $Profile.Name
     if ($ProfileName -like "*.*") {
         $ProfileName = ($ProfileName.Split("."))[1]
+    }
+    if (Test-Path -Path (Join-Path -Path ($Profile.FullName) -ChildPath "\user-overrides.$($ProfileName).js")) {
+        <# Action to perform if the condition is true #>
     }
     try {
         $userOverride = Resolve-Path -Path ".\user-overrides.$($ProfileName).js"
