@@ -300,4 +300,4 @@ user_pref("browser.uidensity", 1);
 user_pref("floorp.newtab.overrides.newtaburl", "https://www.startpage.com/do/mypage.pl?prfe=b1c1900c2cfd73603ac4d1a7d98a987dde7b1cf345206497a62c5d546801bda1b9e7bb0d91e763990790f59c101b15109d1f3e655f6fe39328c09331547b0a4d01dfa16e6ccabb006d55789f79a8");
 user_pref("browser.toolbars.bookmarks.visibility", "never");
 user_pref("browser.display.statusbar", false);
-//user_pref("taskbar.grouping.useprofile", true);
+user_pref("taskbar.grouping.useprofile", true);
