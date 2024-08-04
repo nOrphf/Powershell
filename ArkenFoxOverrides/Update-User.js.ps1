@@ -18,10 +18,10 @@ try {
         Write-Host (Resolve-Path $ScriptRoot)
         #Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.4tw%20L.js" -SslProtocol Tls12 -OutFile "$ScriptRoot\user-overrides.4tw L.js" -ErrorAction Stop
         foreach ($UseroverrideName in $UseroverridesToDl) {
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($UseroverrideName.Replace(" ","%20",$true,$null)).js" -SslProtocol Tls12 -OutFile "$ScriptRoot\user-overrides.$UseroverrideName.js" -ErrorAction Stop
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($UseroverrideName.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$UseroverrideName.js" -ErrorAction Stop
         }
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/prefsCleaner.bat" -SslProtocol Tls12 -OutFile "$ScriptRoot\prefsCleaner.bat" -ErrorAction Stop
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/updater.bat" -SslProtocol Tls12 -OutFile "$ScriptRoot\updater.bat" -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/prefsCleaner.bat" -OutFile "$ScriptRoot\prefsCleaner.bat" -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/updater.bat" -OutFile "$ScriptRoot\updater.bat" -ErrorAction Stop
     }
     catch {
         throw "Download of required files failed."
@@ -29,10 +29,10 @@ try {
     try {
         $c = Get-Content "$ScriptRoot\prefsCleaner.bat" -Raw
         # , $true sets case sensitivity to case insensitive, $null keeps current cultureinfo
-        $c.Replace("CLS", "REM CLS", $true, $null) | Out-File "$ScriptRoot\prefsCleaner.bat"
+        $c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")  | Out-File "$ScriptRoot\prefsCleaner.bat" -Encoding utf8
         $c = Get-Content "$ScriptRoot\updater.bat" -Raw
         # , $true sets case sensitivity to case insensitive, $null keeps current cultureinfo
-        $c.Replace("CLS", "REM CLS", $true, $null) | Out-File "$ScriptRoot\updater.bat"
+        $c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")  | Out-File "$ScriptRoot\updater.bat" -Encoding utf8
     }
     catch {
         Write-Warning "REM of CLS failed, som CLS might happen."
@@ -56,11 +56,12 @@ try {
         if ($UseroverridesToDl -contains $ProfileName) {
             try {
                 $userOverride = Resolve-Path -Path "$ScriptRoot\user-overrides.$($ProfileName).js" -ErrorAction Stop
+                Write-Host "user-overrides.$($ProfileName).js found"
             }
             catch {
                 throw ('User-overrides.js not found for profile "{0}"' -f $ProfileName)
             }
-            Write-Host "Copying files to profile $($ProfileName)"
+            Write-Host "Deleting old files from profile $($ProfileName), if exists"
             try {
                 $ProfileUserOverride = Join-Path -Path $Profile.FullName -ChildPath "user-overrides.js" -ErrorAction Stop
                 $ProfileUserUpdater = Join-Path -Path $Profile.FullName -ChildPath "updater.bat" -ErrorAction Stop
@@ -82,17 +83,24 @@ try {
                 foreach ($File in $BackupFiles) {
                     Remove-Item $file.FullName -Force -ErrorAction Stop
                 }
+            }
+            catch {
+                $_
+                throw "Somthing happend cleaning the profile"
+            }
+            Write-Host "Copying files to profile $($ProfileName)"
+            try{
                 Copy-Item -Path $userOverride -Destination $ProfileUserOverride -Force -ErrorAction Stop
                 Copy-Item -Path $updater -Destination $ProfileUserUpdater -Force -ErrorAction Stop
                 Copy-Item -Path $PrefCleaner -Destination $ProfilePrefCleaner -Force -ErrorAction Stop
             }
             catch {
                 $_
-                throw "Somthing happend cleaning the profile and copy new files"
+                throw "Somthing happend copying new files"
             }
+            Write-Host "Updating ArkenFox in profile $($ProfileName)"
             try {
                 Start-Process -Wait -NoNewWindow -FilePath $ProfileUserUpdater -ArgumentList "-unattended" -ErrorAction Stop
-                 
                 if (Test-Path $ProfileUserJs) {
                     Start-Process -Wait -NoNewWindow -FilePath $ProfilePrefCleaner -ArgumentList "-unattended" -ErrorAction Stop
                 }
@@ -100,6 +108,7 @@ try {
             catch {
                 throw "ArkenFox update failed :("
             }
+            Write-Host "Cleaning up profile $($ProfileName)"
             try {
                 Remove-Item $ProfileUserOverride -Force -ErrorAction Stop
                 Remove-Item $ProfileUserUpdater -Force -ErrorAction Stop
