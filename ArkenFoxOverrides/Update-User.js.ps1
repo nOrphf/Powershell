@@ -113,7 +113,6 @@ try {
                 Remove-Item $ProfileUserOverride -Force -ErrorAction Stop
                 Remove-Item $ProfileUserUpdater -Force -ErrorAction Stop
                 Remove-Item $ProfilePrefCleaner -Force -ErrorAction Stop
-                Remove-Item $ProfileUserJs -Force -ErrorAction Stop
             }
             catch {
                 throw "Clean up couldn't delete all files in profile $($ProfileName)"
