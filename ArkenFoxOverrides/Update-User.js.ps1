@@ -29,10 +29,10 @@ try {
     try {
         $c = Get-Content "$ScriptRoot\prefsCleaner.bat" -Raw
         # , $true sets case sensitivity to case insensitive, $null keeps current cultureinfo
-        $c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")  | Out-File "$ScriptRoot\prefsCleaner.bat" -Encoding utf8
+        [IO.File]::WriteAllLines("$ScriptRoot\prefsCleaner.bat", ($c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")))
         $c = Get-Content "$ScriptRoot\updater.bat" -Raw
         # , $true sets case sensitivity to case insensitive, $null keeps current cultureinfo
-        $c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")  | Out-File "$ScriptRoot\updater.bat" -Encoding utf8
+        [IO.File]::WriteAllLines("$ScriptRoot\updater.bat", ($c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")))
     }
     catch {
         Write-Warning "REM of CLS failed, som CLS might happen."
