@@ -1,3 +1,7 @@
+$UseroverridesToDl = @(
+    "4tw L"
+    "Vitec"
+)
 if ($PSScriptRoot) {
     $ScriptRoot = $PSScriptRoot
 }
