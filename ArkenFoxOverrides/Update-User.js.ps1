@@ -1,3 +1,9 @@
+[CmdletBinding()]
+param (
+    [Parameter(Mandatory)]
+    [Array]
+    $ProfilesToUpdate
+)
 $CustomOverrides = @(
     "Vitec"
 )
@@ -19,9 +25,11 @@ try {
     
     try {
         Write-Host (Resolve-Path $ScriptRoot)
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.js" -OutFile "$ScriptRoot\user-overrides.$UseroverrideName.js" -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.js" -OutFile "$ScriptRoot\user-overrides.js" -ErrorAction Stop
         foreach ($CostumOverride in $CustomOverrides) {
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($CostumOverride.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$CostumOverride.js" -ErrorAction Stop
+            if ($ProfilesToUpdate -contains $CustomOverride) {
+                Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($CostumOverride.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$CostumOverride.js" -ErrorAction Stop
+            }
         }
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/prefsCleaner.bat" -OutFile "$ScriptRoot\prefsCleaner.bat" -ErrorAction Stop
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/updater.bat" -OutFile "$ScriptRoot\updater.bat" -ErrorAction Stop
@@ -31,10 +39,8 @@ try {
     }
     try {
         $c = Get-Content "$ScriptRoot\prefsCleaner.bat" -Raw
-        # , $true sets case sensitivity to case insensitive, $null keeps current cultureinfo
         [IO.File]::WriteAllLines("$ScriptRoot\prefsCleaner.bat", ($c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")))
         $c = Get-Content "$ScriptRoot\updater.bat" -Raw
-        # , $true sets case sensitivity to case insensitive, $null keeps current cultureinfo
         [IO.File]::WriteAllLines("$ScriptRoot\updater.bat", ($c -iReplace("CLS", "REM CLS") -iReplace("timeout","REM TIMEOUT")))
     }
     catch {
@@ -44,6 +50,7 @@ try {
         $ResvProfileDir = Resolve-Path -Path $ProfileDir -ErrorAction Stop
         $PrefCleaner = Resolve-Path -Path "$ScriptRoot\prefsCleaner.bat" -ErrorAction Stop
         $updater = Resolve-Path -Path "$ScriptRoot\updater.bat" -ErrorAction Stop
+        $userOverride = Resolve-Path -Path "$ScriptRoot\user-overrides.js" -ErrorAction Stop
     }
     Catch {
         throw "Required files not found (prefsCleaner.bat, updater.bat)"
@@ -51,18 +58,18 @@ try {
     $Profiles = Get-ChildItem -Path $ResvProfileDir
     Write-Host "Found these profiles $Profiles.name"
     foreach ($Profile in $Profiles) {
-        $userOverride = $null
         $ProfileName = $Profile.Name
         if ($ProfileName -like "*.*") {
             $ProfileName = ($ProfileName.Split("."))[1]
         }
-        if ($UseroverridesToDl -contains $ProfileName) {
+        if ($ProfilesToUpdate -contains $ProfileName) {
+            $CustomOverride = $null
             try {
-                $userOverride = Resolve-Path -Path "$ScriptRoot\user-overrides.$($ProfileName).js" -ErrorAction Stop
+                $CustomOverride = Get-content -Path (Resolve-Path -Path "$ScriptRoot\user-overrides.$($ProfileName).js" -ErrorAction Stop) -ErrorAction Stop
                 Write-Host "user-overrides.$($ProfileName).js found"
             }
             catch {
-                throw ('User-overrides.js not found for profile "{0}"' -f $ProfileName)
+                Write-host "No Custom override found for profile $($ProfileName)"
             }
             Write-Host "Deleting old files from profile $($ProfileName), if exists"
             try {
@@ -96,6 +103,9 @@ try {
                 Copy-Item -Path $userOverride -Destination $ProfileUserOverride -Force -ErrorAction Stop
                 Copy-Item -Path $updater -Destination $ProfileUserUpdater -Force -ErrorAction Stop
                 Copy-Item -Path $PrefCleaner -Destination $ProfilePrefCleaner -Force -ErrorAction Stop
+                if ($CustomOverride) {
+                    [IO.File]::AppendAllLines([string]$ProfileUserOverride,[string[]]$CustomOverride)
+                }
             }
             catch {
                 $_
@@ -134,7 +144,10 @@ finally {
         if (Test-Path $PrefCleaner) {
             Remove-Item $PrefCleaner -Force -ErrorAction Stop
         }
-        foreach ($UseroverrideName in $UseroverridesToDl) {
+        if (Test-Path $userOverride) {
+            Remove-Item $userOverride -Force -ErrorAction Stop
+        }
+        foreach ($UseroverrideName in $CustomOverrides) {
             remove-item "$ScriptRoot\user-overrides.$UseroverrideName.js"
         }
     }
