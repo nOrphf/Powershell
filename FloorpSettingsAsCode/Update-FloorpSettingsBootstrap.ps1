@@ -1,4 +1,6 @@
 
+#Version 1.0.1
+#    -    Fixed wrong file extension for transcript.
 #Version 1.0
 if ($PSScriptRoot) {
     $ScriptRoot = $PSScriptRoot
@@ -8,7 +10,7 @@ else {
 }
 $ProfileList = @(Get-Content (Join-path -Path $ScriptRoot -ChildPath "Profiles.ini"))
 try {
-    Start-Transcript (Join-Path -path $ScriptRoot -ChildPath "Update-FloorpSettingsBootstrap.ps1")
+    Start-Transcript (Join-Path -path $ScriptRoot -ChildPath "Update-FloorpSettingsBootstrap.log")
     $ScriptUrl = "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/FloorpSettingsAsCode/Update-FloorpSettings.ps1"
     $ScriptPath = Join-path -path $ScriptRoot -ChildPath "Update-FloorpSettings.ps1"
     Invoke-WebRequest -Uri $ScriptUrl -OutFile $ScriptPath
