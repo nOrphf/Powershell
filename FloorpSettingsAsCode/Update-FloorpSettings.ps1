@@ -4,14 +4,12 @@ param (
     [Array]
     $ProfilesToUpdate
 )
-$CustomOverrides = @(
-    "Vitec"
-)
+$CustomOverrides = (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/FloorpSettingsAsCode/CustomOverrides.ini").Content
 if ($PSScriptRoot) {
     $ScriptRoot = $PSScriptRoot
 }
 else {
-    $ScriptRoot = "S:\Proton Drive\My files\Admin stuff"
+    $ScriptRoot = Resolve-Path "."
 }
 try {
     # Dowload files
