@@ -1,9 +1,19 @@
+if ($PSScriptRoot) {
+    $ScriptRoot = $PSScriptRoot
+}
+else {
+    $ScriptRoot = "D:\Repos\CodeRepo\Powershell\4tw Group\UpdateArkenfox"
+}
+$ProfileList = @(Get-Content (Join-path -Path $ScriptRoot -ChildPath "Profiles.ini"))
 try {
-    Start-Transcript (Join-Path -path (Resolve-Path -Path ".")  -ChildPath "Update-ArkenFoxBootStrap.log")
+    Start-Transcript (Join-Path -path $ScriptRoot -ChildPath "Update-ArkenFoxBootStrap.log")
     $ScriptUrl = "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/Update-User.js.ps1"
-    #Invoke-WebRequest -Uri $ScriptUrl -OutFile "Update-User.js.ps1"
-    Start-Process -FilePath "powershell.exe" -ArgumentList ('-ExecutionPolicy Unrestricted -file "{0}"' -f (Resolve-Path ".\Update-User.js.ps1")) -Wait
+    Invoke-WebRequest -Uri $ScriptUrl -OutFile (Join-path -path $ScriptRoot -ChildPath "Update-User.js.ps1")
+    . (Join-Path -Path $ScriptRoot -ChildPath "\Update-User.js.ps1") -ProfilesToUpdate $ProfileList
 }
 finally {
+    if (Test-Path "$ScriptRoot\Update-User.js.ps1") {
+        Remove-Item "$ScriptRoot\Update-User.js.ps1"
+    }
     Stop-Transcript
 }
