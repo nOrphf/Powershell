@@ -25,10 +25,10 @@ try {
     
     try {
         Write-Host (Resolve-Path $ScriptRoot)
-        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.js" -OutFile "$ScriptRoot\user-overrides.js" -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/FloorpSettingsAsCode/user-overrides.js" -OutFile "$ScriptRoot\user-overrides.js" -ErrorAction Stop
         foreach ($CostumOverride in $CustomOverrides) {
             if ($ProfilesToUpdate -contains $CustomOverride) {
-                Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($CostumOverride.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$CostumOverride.js" -ErrorAction Stop
+                Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/FloorpSettingsAsCode/user-overrides.$($CostumOverride.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$CostumOverride.js" -ErrorAction Stop
             }
         }
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/prefsCleaner.bat" -OutFile "$ScriptRoot\prefsCleaner.bat" -ErrorAction Stop
