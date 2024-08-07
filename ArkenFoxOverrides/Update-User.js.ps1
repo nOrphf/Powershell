@@ -1,5 +1,4 @@
-$UseroverridesToDl = @(
-    "4tw L"
+$CustomOverrides = @(
     "Vitec"
 )
 if ($PSScriptRoot) {
@@ -20,9 +19,9 @@ try {
     
     try {
         Write-Host (Resolve-Path $ScriptRoot)
-        #Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.4tw%20L.js" -SslProtocol Tls12 -OutFile "$ScriptRoot\user-overrides.4tw L.js" -ErrorAction Stop
-        foreach ($UseroverrideName in $UseroverridesToDl) {
-            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($UseroverrideName.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$UseroverrideName.js" -ErrorAction Stop
+        Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.js" -OutFile "$ScriptRoot\user-overrides.$UseroverrideName.js" -ErrorAction Stop
+        foreach ($CostumOverride in $CustomOverrides) {
+            Invoke-WebRequest -Uri "https://raw.githubusercontent.com/nOrphf/MyToolBox/main/ArkenFoxOverrides/user-overrides.$($CostumOverride.Replace(" ","%20")).js" -OutFile "$ScriptRoot\user-overrides.$CostumOverride.js" -ErrorAction Stop
         }
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/prefsCleaner.bat" -OutFile "$ScriptRoot\prefsCleaner.bat" -ErrorAction Stop
         Invoke-WebRequest -Uri "https://raw.githubusercontent.com/arkenfox/user.js/master/updater.bat" -OutFile "$ScriptRoot\updater.bat" -ErrorAction Stop
