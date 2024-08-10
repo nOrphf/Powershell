@@ -137,8 +137,8 @@ user_pref("privacy.resistFingerprinting", true); // [FF41+]
 /* 4502: set new window size rounding max values [FF55+]
  * [SETUP-CHROME] sizes round down in hundreds: width to 200s and height to 100s, to fit your screen
  * [1] https://bugzilla.mozilla.org/1330882 ***/
-user_pref("privacy.window.maxInnerWidth", 16000);
-user_pref("privacy.window.maxInnerHeight", 9000);
+user_pref("privacy.window.maxInnerWidth", *);
+user_pref("privacy.window.maxInnerHeight", *);
 /* 4503: disable mozAddonManager Web API [FF57+]
  * [NOTE] To allow extensions to work on AMO, you also need 2662
  * [1] https://bugzilla.mozilla.org/buglist.cgi?bug_id=1384330,1406795,1415644,1453988 ***/
@@ -157,7 +157,7 @@ user_pref("privacy.resistFingerprinting.letterboxing", false); // [HIDDEN PREF]
 /* 4505: experimental RFP [FF91+]
  * [WARNING] DO NOT USE unless testing, see [1] comment 12
  * [1] https://bugzilla.mozilla.org/1635603 ***/
-// user_pref("privacy.resistFingerprinting.exemptedDomains", "*.example.invalid");
+user_pref("privacy.resistFingerprinting.exemptedDomains", "dashboard.cloudflare.com");
 /* 4506: disable RFP spoof english prompt [FF59+]
  * 0=prompt, 1=disabled, 2=enabled (requires RFP)
  * [NOTE] When changing from value 2, preferred languages ('intl.accept_languages') is not reset.
@@ -280,7 +280,6 @@ user_pref("floorp.legacy.dlui.enable", true);
 user_pref("floorp.lepton.interface", 1);
 user_pref("floorp.search.top.mode", true);
 user_pref("general.autoScroll", false);
-user_pref("network.http.windows-sso.enabled", true);
 user_pref("pref.privacy.disable_button.cookie_exceptions", false);
 user_pref("privacy.donottrackheader.enabled", true);
 user_pref("ui.systemUsesDarkTheme", 1);
