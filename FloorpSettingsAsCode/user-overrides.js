@@ -132,13 +132,13 @@ user_pref("privacy.clearHistory.cookiesAndStorage", false);
  * RFP also has a few side effects: mainly timezone is UTC, and websites will prefer light theme
  * [NOTE] pbmode applies if true and the original pref is false
  * [1] https://bugzilla.mozilla.org/418986 ***/
-user_pref("privacy.resistFingerprinting", true); // [FF41+]
+user_pref("privacy.resistFingerprinting", false); // [FF41+]
 // user_pref("privacy.resistFingerprinting.pbmode", true); // [FF114+]
 /* 4502: set new window size rounding max values [FF55+]
  * [SETUP-CHROME] sizes round down in hundreds: width to 200s and height to 100s, to fit your screen
  * [1] https://bugzilla.mozilla.org/1330882 ***/
-user_pref("privacy.window.maxInnerWidth", *);
-user_pref("privacy.window.maxInnerHeight", *);
+user_pref("privacy.window.maxInnerWidth", 10000000);
+user_pref("privacy.window.maxInnerHeight", 100000000);
 /* 4503: disable mozAddonManager Web API [FF57+]
  * [NOTE] To allow extensions to work on AMO, you also need 2662
  * [1] https://bugzilla.mozilla.org/buglist.cgi?bug_id=1384330,1406795,1415644,1453988 ***/
