@@ -157,7 +157,7 @@ user_pref("privacy.resistFingerprinting.letterboxing", false); // [HIDDEN PREF]
 /* 4505: experimental RFP [FF91+]
  * [WARNING] DO NOT USE unless testing, see [1] comment 12
  * [1] https://bugzilla.mozilla.org/1635603 ***/
-user_pref("privacy.resistFingerprinting.exemptedDomains", "dash.cloudflare.com");
+user_pref("privacy.resistFingerprinting.exemptedDomains", "*.cloudflare.com");
 /* 4506: disable RFP spoof english prompt [FF59+]
  * 0=prompt, 1=disabled, 2=enabled (requires RFP)
  * [NOTE] When changing from value 2, preferred languages ('intl.accept_languages') is not reset.
