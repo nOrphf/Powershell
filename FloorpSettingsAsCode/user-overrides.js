@@ -1,4 +1,15 @@
 // ArkenFox overrides
+/*** [SECTION 0100]: STARTUP ***/
+user_pref("_user.js.parrot", "0100 syntax error: the parrot's dead!");
+/* 0102: set startup page [SETUP-CHROME]
+ * 0=blank, 1=home, 2=last visited page, 3=resume previous session
+ * [NOTE] Session Restore is cleared with history (2811), and not used in Private Browsing mode
+ * [SETTING] General>Startup>Restore previous session ***/
+user_pref("browser.startup.page", 1);
+/* 0103: set HOME+NEWWINDOW page
+ * about:home=Firefox Home (default, see 0105), custom URL, about:blank
+ * [SETTING] Home>New Windows and Tabs>Homepage and new windows ***/
+user_pref("browser.startup.homepage", "chrome://browser/content/places/places.xhtml");
 /*** [SECTION 0400]: SAFE BROWSING (SB)
     SB has taken many steps to preserve privacy. If required, a full url is never sent
     to Google, only a part-hash of the prefix, hidden with noise of other real part-hashes.
@@ -156,6 +167,11 @@ user_pref("network.trr.mode", 3);
   * RFP also has a few side effects: mainly that timezone is GMT, and websites will prefer light theme ***/
  user_pref("privacy.resistFingerprinting", true); // [FF41+]
  user_pref("privacy.resistFingerprinting.pbmode", true); // [FF114+]
+/* 4502: set RFP new window size max rounded values [FF55+]
+ * [SETUP-CHROME] sizes round down in hundreds: width to 200s and height to 100s, to fit your screen
+ * [1] https://bugzilla.mozilla.org/1330882 ***/
+user_pref("privacy.window.maxInnerWidth", 8000);
+user_pref("privacy.window.maxInnerHeight", 2000);
  /* 4510: disable using system colors
   * [SETTING] General>Language and Appearance>Fonts and Colors>Colors>Use system colors ***/
  user_pref("browser.display.use_system_colors", true); // [DEFAULT: false NON-WINDOWS]
